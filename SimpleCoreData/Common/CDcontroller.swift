@@ -31,7 +31,7 @@ struct CDcontroller{
         viewContext = container.viewContext
     }
     
-    
+    //  Извлечение всех данных
     func fetchAll() -> [NoteItem]{
         
         let request: NSFetchRequest<Note> = Note.fetchRequest()
@@ -54,7 +54,7 @@ struct CDcontroller{
         return result
     }
     
-    
+    //  Добавление одного элемента
     func add(title: String, text: String){
         
         let note = Note(context: viewContext)
@@ -66,6 +66,29 @@ struct CDcontroller{
         save()
     }
     
+    
+    func delete(id: UUID){
+        
+        if let objectForDeletion = findInStorage(id: id){
+            
+            viewContext.delete(objectForDeletion)
+        }
+    }
+    
+    func findInStorage(id: UUID) -> Note?{
+        
+        let request: NSFetchRequest<Note> = Note.fetchRequest()
+        request.predicate = NSPredicate(format: "id = '\(id)'")
+        
+        do {
+            return try viewContext.fetch(request)[0]    //  Предполагается, что такое значение одно
+        } catch {
+            print("Find fault.")
+            return nil
+        }
+    }
+    
+    //  Сохранение
     func save(){
         
         do{

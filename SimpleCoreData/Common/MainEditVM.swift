@@ -50,7 +50,10 @@ class MainEditVM: ObservableObject{
     
     
     func itemDelete(id: UUID){
-        print("deleted")
+        CDcontroller.shared.delete(id: id)
+        
+        //  Повторная отрисовка
+        retreiveAll()
     }
     
     
