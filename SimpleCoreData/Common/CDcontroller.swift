@@ -12,10 +12,9 @@ import CoreData
 struct CDcontroller{
     
     static var shared = CDcontroller()
+    
     var container: NSPersistentContainer
-    
     var viewContext: NSManagedObjectContext
-    
     
     init(){
         
@@ -31,27 +30,29 @@ struct CDcontroller{
         viewContext = container.viewContext
     }
     
+    
     //  Извлечение всех данных
-    func fetchAll() -> [NoteItem]{
+    func fetchAll() -> [Note] {
         
         let request: NSFetchRequest<Note> = Note.fetchRequest()
         
-        var raw: [Note] = []
-        var result: [NoteItem] = []
-        
         do{
-            try raw = viewContext.fetch(request)
+            return try viewContext.fetch(request)
         }
         catch{
             print("Retrieving fault.")
             return []
         }
+    }
+    
+    //  Извлечение одного элемента(при нажатии)
+    //  Функция не рациональна на малом объёме данных,
+    //  Но на большом количестве записей с объёмными текстовыми полями
+    //  может иметь смысл
+    func retreiveOne(id: UUID) -> (String, String) {
         
-        for item in raw{
-            result.append(NoteItem(id: item.id!, title: item.title ?? "", text: item.text ?? ""))
-        }
-        
-        return result
+        let item = findInStorage(id: id)
+        return (item!.title ?? "", item!.text ?? "")
     }
     
     //  Добавление одного элемента
@@ -66,15 +67,29 @@ struct CDcontroller{
         save()
     }
     
-    
+    //  Удаление одного элемента
     func delete(id: UUID){
         
         if let objectForDeletion = findInStorage(id: id){
-            
             viewContext.delete(objectForDeletion)
         }
     }
     
+    //  Изменение одного элемента
+    func change(id: UUID, newTitle: String, newText: String){
+        
+        let changebleElement = findInStorage(id: id)
+        
+        changebleElement?.setValue(newTitle, forKey: "title")
+        changebleElement?.setValue(newText, forKey: "text")
+        
+        save()
+    }
+    
+    
+    
+    
+    //  Поиск элемента(вспомогательный метод)
     func findInStorage(id: UUID) -> Note?{
         
         let request: NSFetchRequest<Note> = Note.fetchRequest()
@@ -88,14 +103,14 @@ struct CDcontroller{
         }
     }
     
-    //  Сохранение
+    //  Сохранение(вспомогательный метод)
     func save(){
         
         do{
             try viewContext.save()
         }
         catch{
-            print("Save failed.")
+            print("Save fault.")
         }
     }
     

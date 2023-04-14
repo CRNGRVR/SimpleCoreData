@@ -31,7 +31,7 @@ struct MainView: View {
                 VStack{
                     
                     ForEach(mainEditVM.itemsPreview){item in
-                        oneNoteItem(mainVM: mainEditVM, id: item.id, title: item.title)
+                        oneNoteItem(mainVM: mainEditVM, id: item.id!, title: item.title ?? "Ошибка")
                     }
                 }
                 .padding(.top, 10)

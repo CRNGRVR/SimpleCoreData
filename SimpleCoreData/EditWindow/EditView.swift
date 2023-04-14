@@ -21,7 +21,7 @@ struct EditView: View {
                 
                 Spacer()
                 
-                Button(action: {mainEditVM.clickSave()}, label: {
+                Button(action: {mainEditVM.clickSave(id: mainEditVM.currentOpenNote)}, label: {
                     Text("Сохранить")
                         .foregroundColor(Color.yellow)
                 })

@@ -18,9 +18,10 @@ class MainEditVM: ObservableObject{
     
     @Published var currentScreen = "main"
     
-    @Published var itemsPreview: [NoteItem] = []
+    @Published var itemsPreview: [Note] = []
     
     var isNew = false
+    var currentOpenNote: UUID? = nil
     @Published var titleInEditor = ""
     @Published var textInEditor = ""
     
@@ -32,12 +33,6 @@ class MainEditVM: ObservableObject{
         retreiveAll()
     }
     
-    func change(){
-        
-        
-        
-        retreiveAll()
-    }
     
     func retreiveAll(){
         itemsPreview = CDcontroller.shared.fetchAll()
@@ -45,7 +40,13 @@ class MainEditVM: ObservableObject{
     
     
     func itemClick(id: UUID){
-        print("clck")
+        currentOpenNote = id
+        
+        let one = CDcontroller.shared.retreiveOne(id: id)
+        titleInEditor = one.0
+        textInEditor = one.1
+        
+        currentScreen = "editor"
     }
     
     
@@ -65,15 +66,18 @@ class MainEditVM: ObservableObject{
         textInEditor = ""
         
         isNew = false
+        currentOpenNote = nil
     }
     
-    func clickSave(){
+    func clickSave(id: UUID?){
         
         if isNew{
             add(title: titleInEditor, text: textInEditor)
         }
         else{
             
+            //  Редактирование уже имеющейся в бд заметки
+            CDcontroller.shared.change(id: id!, newTitle: titleInEditor, newText: textInEditor)
         }
         
         isNew = false
