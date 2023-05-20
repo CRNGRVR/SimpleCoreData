@@ -27,6 +27,11 @@ struct MainView: View {
                 .padding(.trailing, 20)
             }
             
+            tf(placeHolder: "Поиск", txt: $mainEditVM.findLine, w: .infinity, h: 60)
+                .padding(.leading, 20)
+                .padding(.trailing, 20)
+                .padding(.bottom, 20)
+            
             ScrollView(.vertical){
                 VStack{
                     

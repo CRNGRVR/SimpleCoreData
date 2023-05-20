@@ -72,6 +72,7 @@ struct CDcontroller{
         
         if let objectForDeletion = findInStorage(id: id){
             viewContext.delete(objectForDeletion)
+            save()
         }
     }
     
@@ -111,6 +112,21 @@ struct CDcontroller{
         }
         catch{
             print("Save fault.")
+        }
+    }
+    
+    
+    func findNoteInList(findLine: String) -> [Note]{
+        
+        let request: NSFetchRequest<Note> = Note.fetchRequest()
+        request.predicate = NSPredicate(format: "title contains[c] '\(findLine)'")
+        
+        do{
+            return try viewContext.fetch(request)
+        }
+        catch{
+            print("Retrieving fault.")
+            return []
         }
     }
     

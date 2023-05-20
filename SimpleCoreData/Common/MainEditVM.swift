@@ -19,6 +19,17 @@ class MainEditVM: ObservableObject{
     @Published var currentScreen = "main"
     
     @Published var itemsPreview: [Note] = []
+    @Published var findLine: String = ""{
+        didSet{
+            if findLine != ""{
+                itemsPreview = CDcontroller.shared.findNoteInList(findLine: findLine)
+            }
+            else{
+                itemsPreview = CDcontroller.shared.fetchAll()
+            }
+        }
+    }
+    
     
     var isNew = false
     var currentOpenNote: UUID? = nil
